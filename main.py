@@ -163,8 +163,11 @@ class Bird(Obstacle):
         self.index += 1
 
 
+high_score = 0
+
+
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, high_score
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
@@ -183,9 +186,11 @@ def main():
         if points % 100 == 0:
             game_speed += 1
 
-        text = font.render("Points: " + str(points), True, (0, 0, 0))
+        text = font.render(
+            f"High Score: {high_score}  Points: {points}", True, (0, 0, 0)
+        )
         textRect = text.get_rect()
-        textRect.center = (1000, 40)
+        textRect.center = (950, 40)
         SCREEN.blit(text, textRect)
 
     def background():
@@ -223,6 +228,7 @@ def main():
             if player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(2000)
                 death_count += 1
+                high_score = max(high_score, points)
                 menu(death_count)
 
         background()
