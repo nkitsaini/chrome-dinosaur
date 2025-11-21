@@ -1,6 +1,9 @@
-import pygame
 import os
 import random
+from pathlib import Path
+
+import pygame
+
 pygame.init()
 
 # Global Constants
@@ -163,7 +166,22 @@ class Bird(Obstacle):
         self.index += 1
 
 
-high_score = 0
+HIGH_SCORE_FILE_PATH = Path.home() / ".local/state/chrome-dinosaur/high_score.txt"
+
+
+def write_high_score(new_high_score: int):
+    HIGH_SCORE_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    HIGH_SCORE_FILE_PATH.write_text(str(new_high_score))
+
+
+def load_high_score() -> int:
+    try:
+        return int(HIGH_SCORE_FILE_PATH.read_text())
+    except FileNotFoundError:
+        return 0
+
+
+high_score = load_high_score()
 
 
 def main():
@@ -229,6 +247,7 @@ def main():
                 pygame.time.delay(2000)
                 death_count += 1
                 high_score = max(high_score, points)
+                write_high_score(high_score)
                 menu(death_count)
 
         background()
